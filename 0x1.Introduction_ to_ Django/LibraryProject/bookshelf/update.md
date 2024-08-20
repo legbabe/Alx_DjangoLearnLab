@@ -1,9 +1,7 @@
-## Update the Book Title
+# Update Operation
 
-### Command:
 ```python
-# Update the title of the book
-retrieved_book.title = "Nineteen Eighty-Four"
-retrieved_book.save()
-
-print(retrieved_book)
+# Update the title
+book.title = "Nineteen Eighty-Four"
+book.save()
+print(book.title)

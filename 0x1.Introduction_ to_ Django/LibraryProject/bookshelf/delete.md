@@ -2,9 +2,12 @@
 
 ### Command:
 ```python
-# Delete the book
-retrieved_book.delete()
+from bookshelf.models import Book
 
-# Verify deletion by trying to retrieve all books
-all_books = Book.objects.all()
-print(list(all_books))
+# Delete the book
+book.delete()
+
+# Try to retrieve all books
+books = Book.objects.all()
+print(books)
+

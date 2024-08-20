@@ -14,27 +14,29 @@ print(book)
 
 
 ## Retrieve Operation
-retrieved_book = Book.objects.get(id=book.id)
-print(retrieved_book)
+retrieved_book = Book.objects.get(title = "1984")
+print(retrieved_book.title, retrieved_book.author, retrieved_book.publication_year)
 
     # Output
     # <1984 by George Orwell, 1949>
 
 
 ## Update Operation
-retrieved_book.title = "Nineteen Eighty-Four"
-retrieved_book.save()
-
-print(retrieved_book)
+book.title = "Nineteen Eighty-Four"
+book.save()
+print(book.title)
 
      # Output
     # <Nineteen Eighty-Four by George Orwell, 1949>
 
 
 ## Delete Operation
-retrieved_book.delete()
+from bookshelf.models import Book
 
-# Verify deletion by trying to retrieve all books
-all_books = Book.objects.all()
-print(list(all_books))
+# Delete the book
+book.delete()
+
+# Try to retrieve all books
+books = Book.objects.all()
+print(books)
 
