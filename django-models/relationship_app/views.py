@@ -1,9 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponse
 from .models import Library, Book 
 from django.views.generic.detail import DetailView
 from django.views.generic import CreateView
+from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.contrib.auth import login
 from django.contrib.auth.views import LoginView, LogoutView
@@ -29,7 +29,7 @@ class LibraryDetails_view(DetailView):
         context['average_rating'] = library.get_average_rating() 
 
 class SignUpView(CreateView):
-    form_class = UserCreationForm
+    form_class = UserCreationForm()
     success_url = reverse_lazy("login")
     template_name = "relationship_app/register.html"
 
@@ -41,7 +41,7 @@ class CustomLogoutView(LogoutView):
     template_name = 'relationship_app/logout.html'
 
 class RegisterView(CreateView):
-    form_class = UserCreationForm
+    form_class = UserCreationForm()
     template_name = 'relationship_app/register.html'
     success_url = reverse_lazy('login')
 
