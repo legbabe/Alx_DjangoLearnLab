@@ -31,18 +31,18 @@ class LibraryDetails_view(DetailView):
 class SignUpView(CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("login")
-    template_name = "registration/register.html"
+    template_name = "relationship_app/register.html"
 
 class CustomLoginView(LoginView):
-    template_name = 'authentication/login.html'
+    template_name = 'relationship_app/login.html'
     redirect_authenticated_user = True
 
 class CustomLogoutView(LogoutView):
-    template_name = 'authentication/logout.html'
+    template_name = 'relationship_app/logout.html'
 
 class RegisterView(CreateView):
     form_class = UserCreationForm
-    template_name = 'authentication/register.html'
+    template_name = 'relationship_app/register.html'
     success_url = reverse_lazy('login')
 
 def check_role(user, role):
