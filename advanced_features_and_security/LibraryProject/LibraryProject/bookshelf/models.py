@@ -11,6 +11,12 @@ class Book(models.Model):
     def __str__(self):
         return self.title
 
+    class Meta:
+        permissions = [
+            ("can_create", "Can create a book"),
+            ("can_delete", "Can delete a book"),
+        ]
+
  
 
 class CustomUser(AbstractUser):
