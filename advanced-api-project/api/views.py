@@ -1,10 +1,11 @@
 from rest_framework import generics, permissions
+from django_filters import rest_framework as filters
 from .models import Book
 from .serializers import BookSerializer
 from .models import Book
 from .serializers import BookSerializer
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated  # Add these imports
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated  
 from .models import Book
 from .serializers import BookSerializer
 
@@ -14,9 +15,8 @@ class BookListCreateView(generics.ListCreateAPIView):
     serializer_class = BookSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    # Customize behavior if needed (e.g., overriding perform_create)
+
     def perform_create(self, serializer):
-        # Custom logic during book creation (if needed)
         serializer.save()
 
 # DetailView to retrieve, update, or delete a book by ID
@@ -26,11 +26,9 @@ class BookRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def perform_update(self, serializer):
-        # Custom logic during update (e.g., updating timestamp)
         serializer.save()
 
     def perform_destroy(self, instance):
-        # Custom logic during deletion (if needed)
         instance.delete()
 
 
