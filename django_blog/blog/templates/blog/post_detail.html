@@ -1,0 +1,14 @@
+<h2>Blog Posts</h2>
+<ul>
+    {% for post in object_list %}
+        <li>
+            <a href="{{ post.get_absolute_url }}">{{ post.title }}</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<p>Tags:
+   {% for tag in post.tags.all %}
+       <a href="{% url 'post_by_tag' tag.name %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+   {% endfor %}
+</p>
