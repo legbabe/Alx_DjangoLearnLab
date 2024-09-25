@@ -6,7 +6,6 @@ from rest_framework.authtoken.models import Token
 from .models import CustomUser
 from .serializers import RegisterSerializer, LoginSerializers, ProfileSerializer
 
-
 @api_view(['POST'])
 def register_user(request):
     """Register a new user."""
