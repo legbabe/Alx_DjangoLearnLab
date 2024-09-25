@@ -16,7 +16,7 @@ from django.contrib.contenttypes.models import ContentType
 
 
 
-@api_view(['GET', 'POST'])  
+@api_view(['GET', 'POST'])  # Example, adjust to your method type
 @permission_classes([IsAuthenticated])
 def some_view(request, pk):
     post = get_object_or_404(Post, pk=pk)  
@@ -69,8 +69,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def like_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+def like_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
     like, created = Like.objects.get_or_create(user=request.user, post=post)
 
     if not created:
@@ -91,8 +91,8 @@ def like_post(request, post_id):
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
-def unlike_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+def unlike_post(request, pk):
+    post = get_object_or_404(Post,  pk=pk)
     like = Like.objects.filter(user=request.user, post=post).first()
 
     if not like:
