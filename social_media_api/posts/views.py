@@ -5,11 +5,7 @@ from .models import Post, Comment
 from rest_framework.response import Response
 from .serializers import PostSerializer, CommentSerializer
 from rest_framework import filters
-from rest_framework.decorators import api_view
-from rest_framework import status
-from .models import Notification
-from .models import Post, Like
-from django.contrib.contenttypes.models import ContentType
+from .models import Post
 
 
 def user_feed(request):
