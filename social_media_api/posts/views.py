@@ -8,8 +8,8 @@ from rest_framework import filters
 
 
 def user_feed(request):
-    followed_users = request.user.following.all()
-    posts = Post.objects.filter(author__in=followed_users).order_by('-created_at')
+    following_users = request.user.following.all()
+    posts = Post.objects.filter(author__in=following_users).order_by
     serializer = PostSerializer(posts, many=True)
     return Response(serializer.data)
 
