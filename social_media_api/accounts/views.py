@@ -8,9 +8,10 @@ from rest_framework.authtoken.views import ObtainAuthToken, APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
 from django.shortcuts import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 
 
-class RegisterView(generics.CreateAPIView):
+class RegisterView(generics.GenericAPIView):
     queryset = CustomUser.objects.all()
     serializer_class = RegisterSerializer
 
@@ -24,9 +25,6 @@ class LoginView(ObtainAuthToken):
            token, _= Token.objects.get_or_create(user=user)
            return Response({"token": token.key}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-from rest_framework.permissions import IsAuthenticated
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
