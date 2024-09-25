@@ -1,39 +1,35 @@
 from django.shortcuts import render
-from rest_framework.authtoken.models import Token
+from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, generics
-from .models import CustomUser
-from .serializers import RegisterSerializer, LoginSerializers, ProfileSerializer
-from rest_framework.authtoken.views import ObtainAuthToken, APIView
-
-class RegisterView(generics.CreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = RegisterSerializer
-
-class LoginView(ObtainAuthToken):
-    serializer_class = LoginSerializers
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid(raise_exception=True):
-           user = self.serializer.validated_data['user']
-           token, _= Token.objects.get_or_create(user=user)
-           return Response({"token": token.key}, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
+from rest_framework.authtoken.models import Token
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+from django.contrib.auth import authenticate
+from .models import CustomUser
+from .serializers import UserSerializer
+
+class RegisterView(APIView):
+    def post(self, request):
+        data = request.data
+        user = CustomUser.objects.create_user(username=data['username'], password=data['password'], email=data['email'])
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key}, status=status.HTTP_201_CREATED)
+
+class LoginView(APIView):
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key}, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        serializer = ProfileSerializer(request.user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data)
 
-    def put(self, request):
-        serializer = ProfileSerializer(request.user, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
