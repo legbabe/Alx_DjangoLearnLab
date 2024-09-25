@@ -18,3 +18,27 @@
 - Search posts by title or content: `/api/posts/?search=keyword`
 - Paginate through posts: `/api/posts/?page=2`
 
+## Follow Management
+
+- **Follow a User**:
+  - `POST /api/accounts/follow/<user_id>/`: Follow a specific user by their ID.
+  - Example request:
+    ```bash
+    curl -X POST -H "Authorization: Token <your_token>" http://localhost:8000/api/accounts/follow/2/
+    ```
+
+- **Unfollow a User**:
+  - `POST /api/accounts/unfollow/<user_id>/`: Unfollow a specific user by their ID.
+
+## User Feed
+
+- **Retrieve Feed**:
+  - `GET /api/feed/`: Retrieve a feed of posts from users the authenticated user follows, ordered by creation date (most recent first).
+  - Example request:
+    ```bash
+    curl -X GET -H "Authorization: Token <your_token>" http://localhost:8000/api/feed/
+    ```
+
+## Model Changes
+- **CustomUser Model**:
+  - Added `followers` and `following` fields (many-to-many relationships to handle follow functionality).
