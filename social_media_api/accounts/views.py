@@ -1,39 +1,39 @@
-from rest_framework import status
-from rest_framework.decorators import api_view
+from django.shortcuts import render
+from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
+from rest_framework import status, generics
 from .models import CustomUser
+from .serializers import RegisterSerializer, LoginSerializers, ProfileSerializer
+from rest_framework.authtoken.views import ObtainAuthToken, APIView
 
-@api_view(['POST'])
-def follow_user(request, user_id):
-    """Follow another user."""
-    if not request.user.is_authenticated:
-        return Response({"detail": "Authentication required."}, status=status.HTTP_401_UNAUTHORIZED)
+class RegisterView(generics.CreateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = RegisterSerializer
 
-    user_to_follow = get_object_or_404(CustomUser, id=user_id)
+class LoginView(ObtainAuthToken):
+    serializer_class = LoginSerializers
 
-    if user_to_follow == request.user:
-        return Response({"error": "You cannot follow yourself."}, status=status.HTTP_400_BAD_REQUEST)
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+           user = self.serializer.validated_data['user']
+           token, _= Token.objects.get_or_create(user=user)
+           return Response({"token": token.key}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    if request.user.following.filter(id=user_id).exists():
-        return Response({"message": "You are already following this user."}, status=status.HTTP_400_BAD_REQUEST)
 
-    request.user.following.add(user_to_follow)
-    return Response({"message": f"You are now following {user_to_follow.username}."}, status=status.HTTP_200_OK)
+from rest_framework.permissions import IsAuthenticated
 
-@api_view(['POST'])
-def unfollow_user(request, user_id):
-    """Unfollow another user."""
-    if not request.user.is_authenticated:
-        return Response({"detail": "Authentication required."}, status=status.HTTP_401_UNAUTHORIZED)
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
 
-    user_to_unfollow = get_object_or_404(CustomUser, id=user_id)
+    def get(self, request):
+        serializer = ProfileSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    if user_to_unfollow == request.user:
-        return Response({"error": "You cannot unfollow yourself."}, status=status.HTTP_400_BAD_REQUEST)
-
-    if not request.user.following.filter(id=user_id).exists():
-        return Response({"message": "You are not following this user."}, status=status.HTTP_400_BAD_REQUEST)
-
-    request.user.following.remove(user_to_unfollow)
-    return Response({"message": f"You have unfollowed {user_to_unfollow.username}."}, status=status.HTTP_200_OK)
+    def put(self, request):
+        serializer = ProfileSerializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
