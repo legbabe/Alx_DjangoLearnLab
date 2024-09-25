@@ -15,6 +15,14 @@ from notifications.models import Notification
 from django.contrib.contenttypes.models import ContentType
 
 
+
+@api_view(['GET', 'POST'])  
+@permission_classes([IsAuthenticated])
+def some_view(request, pk):
+    post = get_object_or_404(Post, pk=pk)  
+    return Response(PostSerializer(post).data)
+
+
 def user_feed(request):
     following_users = request.user.following.all()
     posts = Post.objects.filter(author__in=following_users).order_by
