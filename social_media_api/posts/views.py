@@ -20,6 +20,7 @@ from django.contrib.contenttypes.models import ContentType
 @permission_classes([IsAuthenticated])
 def some_view(request, pk):
     post = get_object_or_404(Post, pk=pk)  
+    post = generics.get_object_or_404(Post, pk=pk)
     return Response(PostSerializer(post).data)
 
 
